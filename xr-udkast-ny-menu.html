@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Software Engineering – Games &amp; XR – draft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Tema efter via.dk: mørkegrå tekst, mint-flader, teal accent, skarpe hjørner, grå foldebjælker.
+   VIAs egen skrifttype er licenseret og er ikke indlejret; Figtree bruges som stand-in, Arial som fallback (som via.dk). */
+:root{
+  --ink:#363636; --muted:#5f5f5f; --line:#d6d6d6; --bg:#ffffff;
+  --mint:#ccf1ea; --teal:#32c8aa; --teal-soft:#adeadd; --grey:#ebebeb; --footer:#b1b1b1;
+  --note:#fff1b8; --note-ink:#5a4600; --ed:#eef1ff; --ed-ink:#2f3a85; --ed-line:#aab6f0;
+  --max:1280px; --gutter:max(16px, calc((100% - var(--max)) / 2));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Figtree",Arial,sans-serif}
+a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+p{margin:0 0 12px}
+h3{font-size:1.1rem;line-height:1.35;margin:0 0 6px;font-weight:700}
+
+/* udkast-markering */
+.draftbar{background:var(--note);color:var(--note-ink);font-size:.85rem;padding:8px var(--gutter)}
+.draftbar a{color:var(--note-ink)}
+
+/* VIA-header */
+.site{border-bottom:1px solid var(--line)}
+.site .in{display:flex;justify-content:space-between;align-items:flex-end;padding:18px var(--gutter) 0;gap:24px}
+.logo{text-decoration:none;display:flex;flex-direction:column;line-height:1.2;padding-bottom:18px}
+.logo span{font-weight:300;font-size:1.05rem}
+.logo strong{font-size:1.05rem}
+.topnav{display:flex;gap:2px;font-weight:700;font-size:.9rem}
+.topnav a{text-decoration:none;padding:16px 14px}
+.topnav a[aria-current]{background:var(--mint)}
+.subnav{background:var(--teal-soft);display:flex;justify-content:flex-end;gap:28px;padding:10px var(--gutter);font-size:.85rem}
+.subnav a{text-decoration:none}
+.burger{display:none;width:26px;height:18px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);position:relative;margin-bottom:22px}
+.burger::after{content:"";position:absolute;left:0;right:0;top:6px;border-top:2px solid var(--ink)}
+.crumbs{padding:16px var(--gutter);font-size:.85rem}
+.crumbs a{text-decoration:none}
+.crumbs b{font-weight:700}
+
+/* sektioner som fuldbredde-bånd */
+main{display:block}
+.sec{padding:56px var(--gutter)}
+.sec.band{background:var(--mint)}
+.sec > h2{font-size:2rem;line-height:1.15;font-weight:600;margin:0 0 12px}
+.sec > .intro{font-size:1.1rem;color:var(--muted);margin:0 0 28px;max-width:46em}
+
+/* hero */
+.hero{padding-top:24px}
+.hero-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:40px;align-items:center}
+.kicker{font-weight:700;font-size:.85rem;margin:0 0 8px;text-transform:uppercase;letter-spacing:.05em}
+.hero h1{font-size:3.5rem;line-height:1;font-weight:700;margin:0 0 18px}
+.lead{font-size:1.45rem;line-height:1.35;font-weight:300;color:var(--ink);margin:0 0 26px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:13px 22px;font-weight:700;text-decoration:none;border:2px solid var(--ink);border-radius:0}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:var(--ink)}
+.btn.secondary{background:#fff;color:var(--ink)}
+.btn:focus-visible,.c:focus-visible,summary:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 28px;background:var(--mint);padding:24px 28px;margin:36px 0 0}
+.facts dt{font-weight:700}
+.facts dd{margin:0}
+
+/* video- og billedpladsholdere */
+.video{position:relative;aspect-ratio:16/9;background:#1d2224;color:#f2f2f2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;gap:8px}
+.video .play{width:64px;height:64px;border-radius:50%;background:var(--teal);display:grid;place-items:center}
+.video .play::before{content:"";border-left:20px solid var(--ink);border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:6px}
+.video small{opacity:.8}
+.ph{border:2px dashed #b9b9b9;background:rgba(255,255,255,.6);color:var(--muted);font-size:.85rem;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px}
+
+/* projekt-tidslinje */
+.sems{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.sem{display:grid;grid-template-columns:200px 1fr;gap:22px;background:#fff;border:1px solid var(--line);padding:16px;align-items:start}
+.sem .ph{aspect-ratio:4/3}
+.sem .n{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.sem h3{font-size:1.35rem}
+.sem .subjects{color:var(--muted);font-size:.95rem;margin:4px 0 0}
+.sem.alt{background:var(--teal-soft);border-color:transparent}
+.sem.text-only{grid-template-columns:1fr}
+
+/* kort */
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.card{background:#fff;padding:22px;border:1px solid var(--line)}
+.band .card{border-color:transparent}
+.card h3{font-size:1.35rem}
+.card p{margin:0}
+.person{display:flex;gap:14px;align-items:flex-start}
+.person .face{flex:0 0 60px;height:60px;border-radius:50%;border:2px dashed #b9b9b9;display:grid;place-items:center;font-size:.7rem;color:var(--muted)}
+
+/* passer det til dig */
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.fit ul{margin:8px 0 0;padding-left:20px}
+.fit li{margin-bottom:8px}
+.honest{background:#fff;border-left:6px solid var(--teal);padding:20px 22px}
+.band .honest{background:#fff}
+.honest ul{margin:8px 0 0;padding-left:20px}
+.honest li{margin-bottom:8px}
+
+/* tabeller */
+table{width:100%;border-collapse:collapse;background:#fff}
+.week th,.week td{border:1px solid var(--line);padding:12px;text-align:left;vertical-align:top}
+.week th{background:var(--grey)}
+.week .work{background:var(--teal-soft)}
+.cmp th,.cmp td{border-bottom:1px solid var(--line);padding:12px 10px;text-align:left;vertical-align:top}
+.cmp thead th{background:var(--grey);font-size:.9rem}
+.tablewrap{overflow-x:auto}
+
+/* fold-bjælker som på via.dk */
+details{background:var(--grey);margin-bottom:4px}
+summary{cursor:pointer;padding:14px 14px 14px 48px;font-weight:700;list-style:none;position:relative}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";position:absolute;left:16px;top:9px;font-size:1.5rem;font-weight:300;line-height:1.2}
+details[open] summary::before{content:"\2212"}
+details > div{padding:0 16px 16px 48px}
+details.wide > div{padding:4px 16px 16px}
+.sec > details.wide{margin-top:4px}
+
+/* trin */
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.steps li{counter-increment:s;position:relative;padding:16px 16px 16px 64px;background:#fff;border:1px solid var(--line)}
+.steps li::before{content:counter(s);position:absolute;left:16px;top:14px;width:32px;height:32px;border-radius:50%;background:var(--teal);display:grid;place-items:center;font-weight:700}
+
+/* relaterede links – som "Vil du vide mere"-knapperne */
+.related{display:flex;gap:12px;flex-wrap:wrap}
+.related a{background:#fff;border:1px solid var(--line);padding:12px 16px;font-weight:700;text-decoration:none}
+.band .related a{border-color:transparent}
+
+/* studiestruktur */
+.struct{display:grid;gap:6px}
+.srow{display:grid;grid-template-columns:70px repeat(6,minmax(0,1fr));gap:6px}
+.srow .sn{font-weight:700;display:flex;align-items:center;font-size:.9rem}
+.c{background:#fff;border:1px solid var(--line);padding:10px 12px;font-size:.9rem;line-height:1.3;display:flex;flex-direction:column;justify-content:space-between;gap:6px;min-height:68px;color:var(--ink);text-decoration:none}
+a.c:hover{border-color:var(--ink)}
+.c .e{font-size:.75rem;color:var(--muted)}
+.c.p{background:var(--teal-soft);border-color:transparent}
+.c.x{background:var(--mint);border-color:var(--teal)}
+.c.v{border-style:dashed}
+.s1{grid-column:span 1}.s2{grid-column:span 2}.s3{grid-column:span 3}.s6{grid-column:span 6}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-top:12px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-1px;border:1px solid var(--line);background:#fff}
+.legend .lp::before{background:var(--teal-soft)}.legend .lx::before{background:var(--mint);border-color:var(--teal)}.legend .lv::before{border-style:dashed}
+
+/* gule felter og redaktørnoter */
+.todo{background:var(--note);color:var(--note-ink);padding:0 4px;font-size:.9em}
+.ed{background:var(--ed);color:var(--ed-ink);border:1px dashed var(--ed-line);padding:10px 12px;font-size:.85rem;margin:16px 0 0}
+
+/* VIA-footer */
+.foot{background:var(--footer);padding:40px var(--gutter);display:grid;grid-template-columns:repeat(4,1fr);gap:24px;font-size:.85rem}
+.foot h2{font-size:1rem;margin:0 0 10px}
+.foot ul{list-style:none;margin:0;padding:0}
+.foot li{margin-bottom:4px}
+.foot a{text-decoration:none}
+
+/* fast søg-ind-bjælke på mobil */
+.applybar{display:none}
+
+@media (max-width:900px){
+  .topnav,.subnav{display:none}
+  .burger{display:block}
+  .hero-grid{grid-template-columns:1fr;gap:24px}
+  .facts{grid-template-columns:1fr 1fr}
+  .foot{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .sec{padding:36px 16px}
+  .hero{padding-top:8px}
+  .hero h1{font-size:2.1rem;line-height:1.1}
+  .lead{font-size:1.2rem}
+  .sec > h2{font-size:1.6rem}
+  .sem{grid-template-columns:1fr;gap:10px}
+  .sem .ph{aspect-ratio:16/7}
+  .fit{grid-template-columns:1fr}
+  .srow{grid-template-columns:1fr;gap:4px;margin-bottom:12px}
+  .c{min-height:0;flex-direction:row;align-items:baseline}
+  .s1,.s2,.s3,.s6{grid-column:auto}
+  .foot{grid-template-columns:1fr;padding-bottom:96px}
+  .applybar{display:flex;position:fixed;left:0;right:0;bottom:0;gap:8px;padding:10px 16px;background:#fff;border-top:1px solid var(--line);z-index:10}
+  .applybar .btn{flex:1;text-align:center;padding:10px}
+}
+
+/* lette handlinger og nøgletal */
+.minor{margin:14px 0 0;font-size:.95rem}
+.stat strong{display:block;font-size:2rem;line-height:1.1;margin-bottom:6px}
+
+/* header som på en.via.dk: én bjælke med logo, menu, sprog og søgning */
+.site.en{position:relative}
+.site.en .util{position:absolute;top:0;right:var(--gutter);display:flex;gap:18px;font-size:.75rem;padding-top:14px}
+.site.en .util a{text-decoration:none;color:var(--muted)}
+.site.en .in{padding-top:36px}
+.site.en .topnav{font-weight:400;font-size:1.03rem;gap:0}
+.site.en .topnav a{padding:18px 20px}
+.site.en .topnav a[aria-current]{background:rgba(50,200,170,.4)}
+@media (max-width:1280px){
+  .site.en .topnav{display:none}
+  .site.en .burger{display:block}
+}
+</style>
+</head>
+<body>
+<aside class="draftbar" aria-label="Om udkastet" lang="da">Udkast til den engelske landingpage for Software Engineering – Games &amp; XR (fra optag 2027). Gule felter skal udfyldes eller tjekkes. Blå felter er noter til redaktøren og skal ikke med på siden. <a href="index.html">Alle udkast</a></aside>
+<header class="site en">
+  <div class="util"><a href="#" lang="da">Dansk</a><a href="#">Search</a></div>
+  <div class="in">
+    <a class="logo" href="#"><span>Meet the world</span><strong>VIA University College</strong></a>
+    <nav class="topnav" aria-label="Main menu"><a href="#" aria-current="page">Programmes</a><a href="#">Study environment</a><a href="#">Life in Denmark</a><a href="#">New student</a><a href="#">Global partnerships</a><a href="#">Research</a><a href="#">About VIA</a></nav>
+    <span class="burger" aria-hidden="true"></span>
+  </div>
+</header>
+<nav class="crumbs" aria-label="Breadcrumb"><a href="#">Programmes</a> &rsaquo; <a href="#">Bachelor's and AP degree programmes</a> &rsaquo; <b>Software Engineering – Games &amp; XR</b></nav>
+
+<main>
+
+  <section class="sec hero">
+    <div class="hero-grid">
+      <div>
+        <h1>Software Engineering<span style="position:absolute;left:-9999px"> – </span><span style="display:block;font-weight:300">Games &amp; XR</span></h1>
+        <p style="margin:-6px 0 14px"><span class="todo" lang="da">Skal titlen være "Software Technology Engineering" i stedet for "Software Engineering"? Kan vi udelade XR i undertitlen? Forslag: "Games &amp; 3D".</span></p>
+        <p class="lead">Become a software engineer who builds interactive worlds. You learn software development from the ground up and specialise in game engines, 3D graphics, VR and mixed reality. Graduates work in game studios and XR companies, with simulation and training, or as software developers in any industry.</p>
+        <div class="ctas">
+          <a class="btn primary" href="#apply">How to apply</a>
+          <a class="btn secondary" href="#questions">Talk to a student</a>
+        </div>
+        <p class="minor">Or <a href="#">join an online open house</a> · <a href="#">visit us for a day</a></p>
+        <p class="minor"><span class="todo" lang="da">Hvilken kanal står bag "Talk to a student", og hvem svarer? Findes der ingen, så skift knappen her og i bunden på mobil til "Chat with admissions".</span></p>
+      </div>
+      <div>
+        <div class="video" role="img" aria-label="Placeholder for a short video loop">
+          <strong>Clips from our students' projects</strong>
+          <small>Silent loop, 10–20 sec., with pause button</small>
+        </div>
+        <p class="minor"><a href="#">Watch the full video</a> <span class="todo" lang="da">60–90 sek. med en studerende, der fortæller</span></p>
+      </div>
+    </div>
+    <dl class="facts">
+      <div><dt>Degree</dt><dd>Bachelor of Engineering, 210 ECTS</dd></div>
+      <div><dt>Duration</dt><dd>3½ years</dd></div>
+      <div><dt>Start</dt><dd>August, Viborg</dd></div>
+      <div><dt>Internship</dt><dd>20 weeks, often paid</dd></div>
+      <div><dt>Language</dt><dd>English</dd></div>
+      <div><dt>Entry requirements</dt><dd>Maths A, English B, Physics B or equivalent</dd></div>
+      <div><dt>Deadlines</dt><dd>15 March: international applicants and Danish quota 2<br>5 July: Danish quota 1 <span class="todo" lang="da">bekræft for den engelske uddannelse</span></dd></div>
+      <div><dt>Tuition</dt><dd>Free for EU/EEA and Swiss citizens<br><a href="#">Fees for other applicants</a></dd></div>
+    </dl>
+    <p class="ed" lang="da"><strong>Note til redaktør:</strong> Øverst kører et kort klip i loop uden lyd med hurtige klip fra rigtige projekter: spil, VR og 3D. Klippet skal have en synlig pauseknap. Den lange video med en studerende, der fortæller, åbnes fra linket under klippet og skal have tekster og en transskription. Indtil klippet findes, så brug et godt billede fra et rigtigt projekt. Tjek med kommunikationsafdelingen, at via.dk's skabelon kan vise video i toppen uden at gøre siden langsom på mobil.</p>
+    <p class="ed" lang="da"><strong>Beslutning:</strong> Når siden er på engelsk, finder danske elever, der søger på "spiludvikler uddannelse" eller "XR uddannelse", den sværere. Sørg for en dansk tekst på UddannelsesGuiden og optagelse.dk og evt. en kort dansk side, der linker hertil.</p>
+  </section>
+
+
+  <section class="sec">
+    <h2>Why study here?</h2>
+    <div class="grid">
+      <div class="card"><h3>An engineering degree</h3><p>You graduate as a software engineer with a Bachelor of Engineering, so you're not tied to the games industry. You can work as a developer in any industry or go on to a master's degree.</p></div>
+      <div class="card"><h3>Games, XR and 3D</h3><p>From the first semester you have courses in games, graphics and XR as well as software engineering. If you want the same degree without the specialisation, look at <a href="#">Software Engineering in Horsens</a>.</p></div>
+      <div class="card"><h3>A creative study environment</h3><p>The programme works closely with The Animation Workshop, VIA's animation school, which is ranked third in the world in its field. You share the study environment with the animation students, do some projects together and make games in the student-run game club. Viborg is a UNESCO Creative City of Media Arts. <span class="todo" lang="da">Kan XR-studerende bruge udstyr hos TAW, fx motion capture? Har uddannelsen et partnerskab med Unity eller Unreal? Skriv det her, hvis ja.</span></p></div>
+      <div class="card person"><div class="face">photo</div><div><h3><span class="todo" lang="da">Mød en underviser</span></h3><p><span class="todo" lang="da">Navn og én sætning om underviserens job i spil- eller XR-branchen. Kun hvis I har en underviser med branchebaggrund, ellers fjern kortet.</span></p></div></div>
+    </div>
+  </section>
+
+
+  <section class="sec band" id="build">
+    <h2>Your projects, semester by semester</h2>
+    <p class="intro">Every semester you work on a big group project, and the courses teach you what you need for it. You work in Unity and Unreal Engine, and you also build your own game engine from scratch.</p>
+    <ol class="sems">
+      <li class="sem">
+        <div class="ph">Screenshot from a project</div>
+        <div>
+          <span class="n">Semester 1</span>
+          <h3>Code your first application</h3>
+          <p>You learn programming and object-oriented design from scratch, and your group builds a desktop application. You also start on game development and digital animation.</p>
+        </div>
+      </li>
+      <li class="sem">
+        <div class="ph">Screenshot of a 2D game</div>
+        <div>
+          <span class="n">Semester 2</span>
+          <h3>Build a 2D game</h3>
+          <p>You learn to structure software so it can be tested and changed, and to store data in a database. Your group designs and builds a 2D game using both.</p>
+        </div>
+      </li>
+      <li class="sem">
+        <div class="ph">Photo of students wearing VR headsets</div>
+        <div>
+          <span class="n">Semester 3</span>
+          <h3>Create a VR experience</h3>
+          <p>You program 3D graphics in C++ and learn the linear algebra behind it. In the project, you build an experience for VR headsets.</p>
+        </div>
+      </li>
+      <li class="sem">
+        <div class="ph">Clip from a multiplayer game</div>
+        <div>
+          <span class="n">Semester 4</span>
+          <h3>Build an online multiplayer game</h3>
+          <p>Your group builds a game in Unreal Engine that several players can play together over a network. You learn about networks and distributed systems, and how to test code, including code written by AI.</p>
+        </div>
+      </li>
+      <li class="sem alt text-only">
+        <div>
+          <span class="n">Semester 5</span>
+          <h3>Work in a company for 20 weeks</h3>
+          <p>You join a game studio, a software company or another workplace, in Denmark or abroad. You find the place yourself, with help from VIA and the Career Centre, and a supervisor from VIA follows you. Many companies pay interns (the engineers' union IDA recommends 16,200 DKK a month). If the internship is unpaid and you receive SU, you keep it. <a href="#">Meet Kate and Astrid, who interned at AquaGlobe</a></p>
+          <p>Students have interned in game studios, software companies and companies making e-learning and interactive products. <span class="todo" lang="da">3–4 navne på praktiksteder, gerne en blanding af spilstudie, softwarevirksomhed og simulering eller XR, hvis virksomhederne må nævnes</span></p>
+        </div>
+      </li>
+      <li class="sem">
+        <div class="ph">Screenshot from a bachelor project</div>
+        <div>
+          <span class="n">Semesters 6–7</span>
+          <h3>Choose your electives and make your bachelor project</h3>
+          <p>You learn algorithms, computer systems, cyber security and user experience, and work on an innovation project. In semester 6 you can also go on exchange at one of our partner universities. In the last semester you choose three electives and make your bachelor project.</p>
+        </div>
+      </li>
+    </ol>
+    <p style="margin-top:14px"><a href="#structure">See all courses and ECTS</a></p>
+  </section>
+
+
+  <section class="sec" id="games">
+    <h2>Play our students' games</h2>
+    <p class="intro">Students made these games in their semester projects and bachelor projects. They run in your browser.</p>
+    <div class="grid">
+      <div class="ph" style="aspect-ratio:16/10">Game from semester 2<br>(link to playable build)</div>
+      <div class="ph" style="aspect-ratio:16/10">Game from semester 4</div>
+      <div class="ph" style="aspect-ratio:16/10">Bachelor project</div>
+    </div>
+    <p style="margin-top:12px"><a href="#">See all games on our itch.io page</a> <span class="todo" lang="da">opret</span></p>
+  </section>
+
+
+  <section class="sec band">
+    <h2>Is it for you?</h2>
+    <div class="honest" style="max-width:46em">
+      <h3>Good to know before you apply</h3>
+      <ul>
+        <li>You don't need to know how to program. We start from the beginning.</li>
+        <li>There are 15 ECTS of maths, and you use it for 3D graphics and games. If your maths is rusty, VIA has an online <a href="#">maths kickstarter course</a>.</li>
+        <li>This is an engineering degree, not an art degree. You take one course in animation, but if you want to draw and animate, The Animation Workshop is the right place.</li>
+        <li>It's a full-time programme, around 40 hours a week.</li>
+      </ul>
+    </div>
+  </section>
+
+
+  <section class="sec" id="viborg">
+    <h2>Studying in Viborg</h2>
+    <div class="hero-grid" style="align-items:start">
+      <div class="video" role="img" aria-label="Video placeholder">
+        <div class="play"></div>
+        <strong>Students show you around</strong>
+        <small>Video, approx. 90 sec. with subtitles</small>
+      </div>
+      <div>
+        <p>You study in a class of around 25 students. You visit companies, and former students come back to talk about their jobs. <a href="#">Read the story: Engineering creativity in Minecraft</a></p>
+        <p>In your first weeks, tutors help you settle in. The programme is in old military barracks shared with The Animation Workshop. After hours there are game jams, clubs and Friday bars. Students from the programme and TAW meet every week in a game club to make games, and the club has taken part in Nordic Game Jam.</p>
+        <p>Viborg is a town of about 40,000 people in the middle of Jutland, about an hour from Aarhus. Every year Viborg hosts Viborg Animation Festival (VAF). The animation and games industry comes to the festival, and students show projects from their studies there.</p>
+        <p>Your total living costs, including rent, are typically 6,500–7,500 DKK (about 875–1,000 EUR) a month. VIA recommends Camp Logos, a student residence right next to campus, where both Danish and international students live. You contact Camp Logos directly to get a room. <a href="#">How to find housing in Viborg</a></p>
+        <p class="ed" lang="da"><strong>Anbefaling:</strong> Vis en almindelig dag med lokalerne, gruppen og en underviser, ikke et interview foran en grøn skærm. Lad gerne både en dansk og en international studerende fortælle, og tag klip fra Viborg Animation Festival (VAF) med.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="sec band">
+    <h2>After you graduate</h2>
+    <p style="font-size:1.1rem;margin:0 0 8px">Only <strong>4 %</strong> of recent software engineering graduates from VIA in Horsens are unemployed. A typical starting salary is <strong>42,500 DKK</strong> a month. <span style="color:var(--muted);font-size:.9rem">Source: Uddannelseszoom</span></p>
+    <p style="margin:0 0 8px">VIA's Career Centres help you with your CV, LinkedIn and job search, and hold events where you meet companies.</p>
+    <p class="ed" lang="da"><strong>Note til redaktør:</strong> Tallene er fra Uddannelseszoom på ug.dk (Danmarks Statistik) for softwareteknologi i Horsens. Der er ingen data for Viborg endnu. Opdater tallene, når der kommer nye.</p>
+    <div class="grid" style="margin-top:20px">
+      <div class="card person"><div class="face">photo</div><div><h3>Jeppe</h3><p><span class="todo" lang="da">jobtitel, virksomhed, år</span></p></div></div>
+      <div class="card person"><div class="face">photo</div><div><h3>Name</h3><p><span class="todo" lang="da">dimittend i spilbranchen</span></p></div></div>
+      <div class="card person"><div class="face">photo</div><div><h3>Name</h3><p><span class="todo" lang="da">dimittend uden for spilbranchen</span></p></div></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Go on to a master's degree</h3>
+      <p>You can go on to a two-year master's degree. If you pass three electives in linear algebra, calculus and stochastic modelling, you meet the entry requirements for master's programmes at Aarhus University, such as Computer Engineering and Electrical Engineering. Admission is not guaranteed.</p>
+    </div>
+  </section>
+
+
+  <section class="sec" id="structure">
+    <h2>All courses</h2>
+    <p class="intro">The programme is 210 ECTS, with 30 ECTS per semester. Select a course to read the course description.</p>
+<div class="struct">
+  <div class="srow"><span class="sn">Sem. 1</span>
+    <a href="#" class="c s2"><span>Object-oriented software development</span><span class="e">10 ECTS</span></a>
+    <a href="#" class="c s1"><span>Digital animation production</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Game development</span><span class="e">5 ECTS</span></a>
+    <div class="c s2 p"><span>Semester project: desktop application</span><span class="e">10 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 2</span>
+    <a href="#" class="c s1"><span>Mathematics</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Databases</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Software engineering</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Game architecture</span><span class="e">5 ECTS</span></a>
+    <div class="c s2 p"><span>Semester project: 2D game</span><span class="e">10 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 3</span>
+    <a href="#" class="c s1"><span>Linear algebra</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Web development</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Computer graphics</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>XR technologies</span><span class="e">5 ECTS</span></a>
+    <div class="c s2 p"><span>Semester project: XR</span><span class="e">10 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 4</span>
+    <a href="#" class="c s1"><span>Statistics</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Distributed systems and networks</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>AI-assisted development and testing</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Game development 2</span><span class="e">5 ECTS</span></a>
+    <div class="c s2 p"><span>Semester project: networked game</span><span class="e">10 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 5</span>
+    <div class="c s6 x"><span>Internship in a company</span><span class="e">30 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 6</span>
+    <a href="#" class="c s1"><span>Algorithms and data structures</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Computer systems</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Cyber security</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>User experience</span><span class="e">5 ECTS</span></a>
+    <div class="c s2 p"><span>Innovation and entrepreneurship</span><span class="e">10 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 7</span>
+    <div class="c s1 v"><span>Elective</span><span class="e">5 ECTS</span></div>
+    <div class="c s1 v"><span>Elective</span><span class="e">5 ECTS</span></div>
+    <div class="c s1 v"><span>Elective</span><span class="e">5 ECTS</span></div>
+    <div class="c s3 p"><span>Bachelor project</span><span class="e">15 ECTS</span></div>
+  </div>
+</div>
+<div class="legend"><span>Course (links to course description)</span><span class="lp">Semester project</span><span class="lx">Internship</span><span class="lv">Elective</span></div>
+    <p class="ed" lang="da"><strong>Note til redaktør:</strong> Strukturen følger den nye skitse. Opdater den, når studieordningen er godkendt, og brug de officielle engelske kursusnavne.</p>
+  </section>
+
+
+  <section class="sec band" id="faq">
+    <h2>Questions and answers</h2>
+    <details><summary>Is it worth studying software engineering when AI can write code?</summary><div>AI is part of the programme. You use AI tools in your courses and projects, and in semester 4 you have a course in AI-assisted development and testing. Someone still has to design the software, decide what it should do and check that it works, and that is what you learn here.</div></details>
+    <details><summary>I'm Danish. Can I apply?</summary><div>Yes. The entry requirements are the same, and you apply through optagelse.dk as usual. All teaching is in English, so you should be comfortable reading and writing English.</div></details>
+    <details><summary>Do I need to speak Danish?</summary><div>No. All teaching and exams are in English. <span class="todo" lang="da">Tilbyder VIA danskundervisning?</span></div></details>
+    <details><summary>What does it cost?</summary><div>The programme is free for citizens of the EU/EEA and Switzerland. Other applicants pay a tuition fee, and VIA does not offer scholarships. <a href="#">See tuition fees</a> Remember to budget for rent and living costs. <a href="#viborg">See what it costs to live in Viborg</a></div></details>
+    <details><summary>Can I find an internship if I don't speak Danish?</summary><div>Yes, but it can take more effort. Many game and software companies work in English, but not all of them. We help you find a place through our network, and you can also do your internship abroad. If you want to stay in Denmark after you graduate, an internship here gives you a network and Danish work experience.</div></details>
+    <details><summary>Can I stay and work in Denmark after I graduate?</summary><div>Graduates from Danish programmes can apply for an establishment card, which gives you time to look for work in Denmark. <span class="todo" lang="da">tjek betingelser, link til nyidanmark.dk</span></div></details>
+    <details><summary>Can I get the Danish state education grant (SU)?</summary><div>Danish citizens can. EU citizens can too, if they work in Denmark alongside their studies, for example 10–12 hours a week. <a href="#">SU for international students</a></div></details>
+    <details><summary>I have a relevant degree already. Can I get credit transfer?</summary><div>Yes, for example if you have an Academy Profession (AP) degree in computer science. You still have to meet the entry requirements.</div></details>
+    <details><summary>Can I get support if I have a disability?</summary><div>Yes, you can apply for special educational support (SPS). <a href="#">Contact VIA's SPS advisers</a></div></details>
+  </section>
+
+
+  <section class="sec" id="apply">
+    <h2>How to apply</h2>
+    <ol class="steps">
+      <li><strong>Check the entry requirements.</strong> You need an upper secondary qualification that matches the Danish level of Mathematics A, English B and Physics B or Geoscience A. Each subject must be passed with an average of at least 2.0 on the Danish grading scale. If your exam is not Danish, see the extra requirements below. <a href="#">English proficiency requirements</a></li>
+      <li><strong>Apply at optagelse.dk by 15 March at 12:00 (CET).</strong> Choose "Diplomingeniør i softwareteknologi" (the Danish name of the programme). <span class="todo" lang="da">koden er ikke offentliggjort endnu</span> Upload your documents by 15 March, because they are part of the assessment. If you graduate in the summer, upload your final diploma by 5 July. Danish applicants can also apply in quota 1 by 5 July. If there are places left, you can apply until the programme starts.</li>
+      <li><strong>Send your signature page.</strong> If you don't have a Danish CPR number, sign the signature page from optagelse.dk and email it to apply@via.dk by 15 March at 12:00 (CET).</li>
+      <li><strong>You get an answer on 28 July.</strong> Remember to accept your place before the deadline.</li>
+    </ol>
+    <p style="margin-top:16px">If you are not an EU/EEA or Swiss citizen, you also pay an application fee and tuition, and you need a residence permit. The guide for non-EU/EEA applicants explains the extra steps.</p>
+    <p><strong>Step-by-step guides:</strong> <a href="#">EU/EEA applicants</a> · <a href="#">Non-EU/EEA applicants</a> · <a href="#">Danish applicants</a></p>
+    <details class="wide" style="margin-top:12px"><summary>If your exam is not Danish</summary><div>
+      <ul style="margin:0;padding-left:20px">
+        <li>Your exam must include at least 375 hours of mathematics, 210 hours of English and 190 hours of physics or 375 hours of geoscience. The hours are 60 minutes each and must be from the last three years of upper secondary school.</li>
+        <li>Fill in the <a href="#">verification form</a> to document the hours, and have your school stamp and sign it.</li>
+        <li>Upload a copy of your exam certificate and transcript of records, with a state-authorised translation of the transcript into Danish or English.</li>
+        <li>Check that your maths covers our <a href="#">maths syllabus</a>.</li>
+      </ul>
+    </div></details>
+    <details class="wide"><summary>How we assess applications</summary><div>
+      <p style="margin-top:0">Applications by 15 March are assessed on your exam results, your grades in maths and English, relevant work experience and other documented qualifications, such as the IB, elite sport or volunteer work. You may be invited to an interview.</p>
+    </div></details>
+    <p style="margin-top:16px"><a href="#">Admission rules and how to appeal</a></p>
+    <p style="color:var(--muted);font-size:.9rem">The programme only starts if enough students apply.</p>
+    <p style="margin-top:12px"><a href="#">Curriculum</a> · <a href="#">Course descriptions</a> · <a href="#">Ministerial order</a> · <a href="#">Common regulations for VIA's engineering programmes</a></p>
+  </section>
+
+
+  <section class="sec band" id="questions">
+    <h2>Questions?</h2>
+    <div class="grid">
+      <div class="card"><h3>Talk to a student</h3><p>Write to one of our students and hear what it's like to study here. <span class="todo" lang="da">mail eller chat</span></p></div>
+      <div class="card"><h3>Join an online info session</h3><p>Meet teachers and students online and ask your questions. Next open house: 11 November 2026. <a href="#">Sign up</a></p></div>
+      <div class="card person"><div class="face">photo</div><div><h3>Richard Brooks</h3><p>Associate professor. Questions about the programme.</p><p>+45 87 55 44 18<br>rib@via.dk</p></div></div>
+      <div class="card"><h3>Admissions</h3><p>Questions about your application.</p><p>+45 87 55 00 00<br>studieservice.optag@via.dk<br><a href="#">Chat with us</a> on weekdays 12:00–13:00 (CET) <span class="todo" lang="da">programsiden siger kl. 12–13, VIA's ansøgervejledning siger kl. 9–11. Hvad er rigtigt?</span></p></div>
+    </div>
+    <p style="margin-top:14px;color:var(--muted);font-size:.92rem">The Animation Workshop, Kasernevej 5, 8800 Viborg, Denmark · +45 87 55 00 25 · viborg@via.dk · <a href="#">Find us on the map</a><br>Phone hours: Monday–Thursday 7:30–15:30, Friday 7:30–14:30 (CET).</p>
+    <p class="ed" lang="da"><strong>Beslutning:</strong> "Talk to a student" og online infomøder er lettere at sige ja til end at søge, især for ansøgere i udlandet, der ikke kan komme på besøg. Det kræver, at nogen svarer, fx et par studentermedhjælpere.</p>
+  </section>
+
+
+  <section class="sec">
+    <h2>You might also like</h2>
+    <div class="related">
+      <a href="#">Software Engineering in Horsens</a>
+      <a href="trainee-udkast-ny-menu.html">Softwareingeniør – trainee (in Danish, online)</a>
+    </div>
+    <p style="margin-top:14px"><a href="#">Get help choosing a programme</a> · <a href="#">Sign up for news about VIA's engineering programmes</a></p>
+  </section>
+
+</main>
+<footer class="foot">
+  <div><h2>Practical</h2><ul><li><a href="#">Addresses</a></li><li><a href="#">Find an employee</a></li><li><a href="#">Jobs at VIA</a></li><li><a href="#">Newsletter</a></li></ul></div>
+  <div><h2>Collaboration and companies</h2><ul><li><a href="#">IT support</a></li><li><a href="#">Rent facilities</a></li><li><a href="#">Student incubators</a></li></ul></div>
+  <div><h2>Staff and students</h2><ul><li><a href="#">Library</a></li><li><a href="#">MyVIA</a></li><li><a href="#">Internship portal</a></li></ul></div>
+  <div><h2>Privacy and legal</h2><ul><li><a href="#">Cookie policy</a></li><li><a href="#">Data and privacy</a></li><li><a href="#">Accessibility statement</a></li></ul></div>
+</footer>
+
+<nav class="applybar" aria-label="Apply"><a class="btn primary" href="#apply">How to apply</a><a class="btn secondary" href="#questions">Talk to a student</a></nav>
+</body>
+</html>

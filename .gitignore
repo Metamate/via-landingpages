@@ -1,0 +1,6 @@
+# Kun de offentlige sider kommer med i repositoriet
+*
+!.gitignore
+!index.html
+!xr-udkast-ny-menu.html
+!trainee-udkast-ny-menu.html
