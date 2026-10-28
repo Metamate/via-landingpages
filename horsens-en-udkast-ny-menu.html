@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Software Technology Engineering, Horsens – draft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Tema efter via.dk: mørkegrå tekst, mint-flader, teal accent, skarpe hjørner, grå foldebjælker.
+   VIAs egen skrifttype er licenseret og er ikke indlejret; Figtree bruges som stand-in, Arial som fallback (som via.dk). */
+:root{
+  --ink:#363636; --muted:#5f5f5f; --line:#d6d6d6; --bg:#ffffff;
+  --mint:#ccf1ea; --teal:#32c8aa; --teal-soft:#adeadd; --grey:#ebebeb; --footer:#b1b1b1;
+  --note:#fff1b8; --note-ink:#5a4600; --ed:#eef1ff; --ed-ink:#2f3a85; --ed-line:#aab6f0;
+  --max:1280px; --gutter:max(16px, calc((100% - var(--max)) / 2));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Figtree",Arial,sans-serif}
+a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+p{margin:0 0 12px}
+h3{font-size:1.1rem;line-height:1.35;margin:0 0 6px;font-weight:700}
+
+/* udkast-markering */
+.draftbar{background:var(--note);color:var(--note-ink);font-size:.85rem;padding:8px var(--gutter)}
+.draftbar a{color:var(--note-ink)}
+
+/* VIA-header */
+.site{border-bottom:1px solid var(--line)}
+.site .in{display:flex;justify-content:space-between;align-items:flex-end;padding:18px var(--gutter) 0;gap:24px}
+.logo{text-decoration:none;display:flex;flex-direction:column;line-height:1.2;padding-bottom:18px}
+.logo span{font-weight:300;font-size:1.05rem}
+.logo strong{font-size:1.05rem}
+.topnav{display:flex;gap:2px;font-weight:700;font-size:.9rem}
+.topnav a{text-decoration:none;padding:16px 14px}
+.topnav a[aria-current]{background:var(--mint)}
+.subnav{background:var(--teal-soft);display:flex;justify-content:flex-end;gap:28px;padding:10px var(--gutter);font-size:.85rem}
+.subnav a{text-decoration:none}
+.burger{display:none;width:26px;height:18px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);position:relative;margin-bottom:22px}
+.burger::after{content:"";position:absolute;left:0;right:0;top:6px;border-top:2px solid var(--ink)}
+.crumbs{padding:16px var(--gutter);font-size:.85rem}
+.crumbs a{text-decoration:none}
+.crumbs b{font-weight:700}
+
+/* sektioner som fuldbredde-bånd */
+main{display:block}
+.sec{padding:56px var(--gutter)}
+.sec.band{background:var(--mint)}
+.sec > h2{font-size:2rem;line-height:1.15;font-weight:600;margin:0 0 12px}
+.sec > .intro{font-size:1.1rem;color:var(--muted);margin:0 0 28px;max-width:46em}
+
+/* hero */
+.hero{padding-top:24px}
+.hero-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:40px;align-items:center}
+.kicker{font-weight:700;font-size:.85rem;margin:0 0 8px;text-transform:uppercase;letter-spacing:.05em}
+.hero h1{font-size:3.5rem;line-height:1;font-weight:700;margin:0 0 18px}
+.lead{font-size:1.45rem;line-height:1.35;font-weight:300;color:var(--ink);margin:0 0 26px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:13px 22px;font-weight:700;text-decoration:none;border:2px solid var(--ink);border-radius:0}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:var(--ink)}
+.btn.secondary{background:#fff;color:var(--ink)}
+.btn:focus-visible,.c:focus-visible,summary:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 28px;background:var(--mint);padding:24px 28px;margin:36px 0 0}
+.facts dt{font-weight:700}
+.facts dd{margin:0}
+
+/* video- og billedpladsholdere */
+.video{position:relative;aspect-ratio:16/9;background:#1d2224;color:#f2f2f2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;gap:8px}
+.video .play{width:64px;height:64px;border-radius:50%;background:var(--teal);display:grid;place-items:center}
+.video .play::before{content:"";border-left:20px solid var(--ink);border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:6px}
+.video small{opacity:.8}
+.ph{border:2px dashed #b9b9b9;background:rgba(255,255,255,.6);color:var(--muted);font-size:.85rem;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px}
+
+/* projekt-tidslinje */
+.sems{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.sem{display:grid;grid-template-columns:200px 1fr;gap:22px;background:#fff;border:1px solid var(--line);padding:16px;align-items:start}
+.sem .ph{aspect-ratio:4/3}
+.sem .n{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.sem h3{font-size:1.35rem}
+.sem .subjects{color:var(--muted);font-size:.95rem;margin:4px 0 0}
+.sem.alt{background:var(--teal-soft);border-color:transparent}
+.sem.text-only{grid-template-columns:1fr}
+
+/* kort */
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.card{background:#fff;padding:22px;border:1px solid var(--line)}
+.band .card{border-color:transparent}
+.card h3{font-size:1.35rem}
+.card p{margin:0}
+.person{display:flex;gap:14px;align-items:flex-start}
+.person .face{flex:0 0 60px;height:60px;border-radius:50%;border:2px dashed #b9b9b9;display:grid;place-items:center;font-size:.7rem;color:var(--muted)}
+
+/* passer det til dig */
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.fit ul{margin:8px 0 0;padding-left:20px}
+.fit li{margin-bottom:8px}
+.honest{background:#fff;border-left:6px solid var(--teal);padding:20px 22px}
+.band .honest{background:#fff}
+.honest ul{margin:8px 0 0;padding-left:20px}
+.honest li{margin-bottom:8px}
+
+/* tabeller */
+table{width:100%;border-collapse:collapse;background:#fff}
+.week th,.week td{border:1px solid var(--line);padding:12px;text-align:left;vertical-align:top}
+.week th{background:var(--grey)}
+.week .work{background:var(--teal-soft)}
+.cmp th,.cmp td{border-bottom:1px solid var(--line);padding:12px 10px;text-align:left;vertical-align:top}
+.cmp thead th{background:var(--grey);font-size:.9rem}
+.tablewrap{overflow-x:auto}
+
+/* fold-bjælker som på via.dk */
+details{background:var(--grey);margin-bottom:4px}
+summary{cursor:pointer;padding:14px 14px 14px 48px;font-weight:700;list-style:none;position:relative}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";position:absolute;left:16px;top:9px;font-size:1.5rem;font-weight:300;line-height:1.2}
+details[open] summary::before{content:"\2212"}
+details > div{padding:0 16px 16px 48px}
+details.wide > div{padding:4px 16px 16px}
+.sec > details.wide{margin-top:4px}
+
+/* trin */
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.steps li{counter-increment:s;position:relative;padding:16px 16px 16px 64px;background:#fff;border:1px solid var(--line)}
+.steps li::before{content:counter(s);position:absolute;left:16px;top:14px;width:32px;height:32px;border-radius:50%;background:var(--teal);display:grid;place-items:center;font-weight:700}
+
+/* relaterede links – som "Vil du vide mere"-knapperne */
+.related{display:flex;gap:12px;flex-wrap:wrap}
+.related a{background:#fff;border:1px solid var(--line);padding:12px 16px;font-weight:700;text-decoration:none}
+.band .related a{border-color:transparent}
+
+/* studiestruktur */
+.struct{display:grid;gap:6px}
+.srow{display:grid;grid-template-columns:70px repeat(6,minmax(0,1fr));gap:6px}
+.srow .sn{font-weight:700;display:flex;align-items:center;font-size:.9rem}
+.c{background:#fff;border:1px solid var(--line);padding:10px 12px;font-size:.9rem;line-height:1.3;display:flex;flex-direction:column;justify-content:space-between;gap:6px;min-height:68px;color:var(--ink);text-decoration:none}
+a.c:hover{border-color:var(--ink)}
+.c .e{font-size:.75rem;color:var(--muted)}
+.c.p{background:var(--teal-soft);border-color:transparent}
+.c.x{background:var(--mint);border-color:var(--teal)}
+.c.v{border-style:dashed}
+.s1{grid-column:span 1}.s2{grid-column:span 2}.s3{grid-column:span 3}.s6{grid-column:span 6}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-top:12px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-1px;border:1px solid var(--line);background:#fff}
+.legend .lp::before{background:var(--teal-soft)}.legend .lx::before{background:var(--mint);border-color:var(--teal)}.legend .lv::before{border-style:dashed}
+
+/* gule felter og redaktørnoter */
+.todo{background:var(--note);color:var(--note-ink);padding:0 4px;font-size:.9em}
+.ed{background:var(--ed);color:var(--ed-ink);border:1px dashed var(--ed-line);padding:10px 12px;font-size:.85rem;margin:16px 0 0}
+
+/* VIA-footer */
+.foot{background:var(--footer);padding:40px var(--gutter);display:grid;grid-template-columns:repeat(4,1fr);gap:24px;font-size:.85rem}
+.foot h2{font-size:1rem;margin:0 0 10px}
+.foot ul{list-style:none;margin:0;padding:0}
+.foot li{margin-bottom:4px}
+.foot a{text-decoration:none}
+
+/* fast søg-ind-bjælke på mobil */
+.applybar{display:none}
+
+@media (max-width:900px){
+  .topnav,.subnav{display:none}
+  .burger{display:block}
+  .hero-grid{grid-template-columns:1fr;gap:24px}
+  .facts{grid-template-columns:1fr 1fr}
+  .foot{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .sec{padding:36px 16px}
+  .hero{padding-top:8px}
+  .hero h1{font-size:2.1rem;line-height:1.1}
+  .lead{font-size:1.2rem}
+  .sec > h2{font-size:1.6rem}
+  .sem{grid-template-columns:1fr;gap:10px}
+  .sem .ph{aspect-ratio:16/7}
+  .fit{grid-template-columns:1fr}
+  .srow{grid-template-columns:1fr;gap:4px;margin-bottom:12px}
+  .c{min-height:0;flex-direction:row;align-items:baseline}
+  .s1,.s2,.s3,.s6{grid-column:auto}
+  .foot{grid-template-columns:1fr;padding-bottom:96px}
+  .applybar{display:flex;position:fixed;left:0;right:0;bottom:0;gap:8px;padding:10px 16px;background:#fff;border-top:1px solid var(--line);z-index:10}
+  .applybar .btn{flex:1;text-align:center;padding:10px}
+}
+
+/* lette handlinger og nøgletal */
+.minor{margin:14px 0 0;font-size:.95rem}
+.stat strong{display:block;font-size:2rem;line-height:1.1;margin-bottom:6px}
+
+/* header som på en.via.dk: én bjælke med logo, menu, sprog og søgning */
+.site.en{position:relative}
+.site.en .util{position:absolute;top:0;right:var(--gutter);display:flex;gap:18px;font-size:.75rem;padding-top:14px}
+.site.en .util a{text-decoration:none;color:var(--muted)}
+.site.en .in{padding-top:36px}
+.site.en .topnav{font-weight:400;font-size:1.03rem;gap:0}
+.site.en .topnav a{padding:18px 20px}
+.site.en .topnav a[aria-current]{background:rgba(50,200,170,.4)}
+@media (max-width:1280px){
+  .site.en .topnav{display:none}
+  .site.en .burger{display:block}
+}
+</style>
+</head>
+<body>
+<aside class="draftbar" aria-label="Om udkastet" lang="da">Udkast til den engelske landingpage for Software Technology Engineering i Horsens. Gule felter skal udfyldes eller tjekkes. Blå felter er noter til redaktøren og skal ikke med på siden. <a href="https://en.via.dk/programmes/bachelor/software-technology-engineering">Nuværende side</a> · <a href="horsens-udkast-ny-menu.html">Dansk udkast</a> · <a href="index.html">Alle udkast</a></aside>
+<header class="site en">
+  <div class="util"><a href="#" lang="da">Dansk</a><a href="#">Search</a></div>
+  <div class="in">
+    <a class="logo" href="#"><span>Meet the world</span><strong>VIA University College</strong></a>
+    <nav class="topnav" aria-label="Main menu"><a href="#" aria-current="page">Programmes</a><a href="#">Study environment</a><a href="#">Life in Denmark</a><a href="#">New student</a><a href="#">Global partnerships</a><a href="#">Research</a><a href="#">About VIA</a></nav>
+    <span class="burger" aria-hidden="true"></span>
+  </div>
+</header>
+<nav class="crumbs" aria-label="Breadcrumb"><a href="#">Programmes</a> &rsaquo; <a href="#">Bachelor's and AP degree programmes</a> &rsaquo; <b>Software Technology Engineering</b></nav>
+
+<main>
+
+  <section class="sec hero">
+    <div class="hero-grid">
+      <div>
+        <h1>Software Technology Engineering</h1>
+        <p class="lead">Learn to develop software from the ground up: web applications, databases, cloud systems, embedded software and machine learning. Every semester you build a system with your project group, and in semester 5 you spend 20 weeks in a company. At the end, you can specialise in AI, data or interactive media.</p>
+        <div class="ctas">
+          <a class="btn primary" href="#apply">How to apply</a>
+          <a class="btn secondary" href="#">Join an online open house</a>
+        </div>
+        <p class="minor">Or <a href="#questions">ask a question</a> · <a href="#">visit us for a day</a></p>
+      </div>
+      <div>
+        <div class="video" role="img" aria-label="Video placeholder">
+          <div class="play"></div>
+          <strong>A day as a software engineering student</strong>
+          <small>Video, 60–90 sec. with subtitles</small>
+        </div>
+      </div>
+    </div>
+    <dl class="facts">
+      <div><dt>Degree</dt><dd>Bachelor of Engineering, 210 ECTS</dd></div>
+      <div><dt>Duration</dt><dd>3½ years</dd></div>
+      <div><dt>Start</dt><dd>August, Campus Horsens <span class="todo" lang="da">den nuværende faktaboks siger september, teksten siger slutningen af august</span></dd></div>
+      <div><dt>Internship</dt><dd>20 weeks, often paid</dd></div>
+      <div><dt>Specialisations</dt><dd>AI, data or interactive media</dd></div>
+      <div><dt>Entry requirements</dt><dd>Maths A, English B, Physics B or Geoscience A</dd></div>
+      <div><dt>Deadlines</dt><dd>15 March: international applicants and Danish quota 2<br>5 July: Danish quota 1</dd></div>
+      <div><dt>Tuition</dt><dd>Free for EU/EEA and Swiss citizens<br><a href="#">Fees for other applicants</a></dd></div>
+    </dl>
+    <p class="ed" lang="da"><strong>Note til redaktør:</strong> Videoen følger en projektgruppe en dag: undervisning, gruppearbejde om semesterprojektet og en time i IoT- eller XR-laboratoriet. Lad gerne en international studerende fortælle, hvad gruppen bygger. Indtil videoen findes, så brug et rigtigt billede fra et projekt eller laboratoriet.</p>
+  </section>
+
+
+  <section class="sec">
+    <h2>Why study here?</h2>
+    <div class="grid">
+      <div class="card"><h3>An engineering degree</h3><p>You graduate as a software engineer with a Bachelor of Engineering. You can work as a developer in any industry or go on to a master's degree.</p></div>
+      <div class="card"><h3>You learn by building</h3><p>Every semester you work on a project in a group, often with a case from a real company. The programme has an IoT lab and an XR lab where you try out what you learn.</p></div>
+      <div class="card"><h3>Choose your direction</h3><p>In semesters 6 and 7 you can specialise in Machine Learning and AI Engineering, Business Information Systems or Interactive Media, or choose electives based on your interests.</p></div>
+      <div class="card"><h3>Internship guarantee</h3><p>VIA offers an internship guarantee together with Horsens Business Alliance, a partnership between Horsens Municipality, local companies and business organisations. <span class="todo" lang="da">Hvad lover garantien konkret?</span></p></div>
+    </div>
+  </section>
+
+
+  <section class="sec band" id="build">
+    <h2>Your projects, semester by semester</h2>
+    <p class="intro">Every semester you work on a large group project, and your courses give you the skills to build it.</p>
+    <ol class="sems">
+      <li class="sem">
+        <div class="ph">Screenshot from a project</div>
+        <div>
+          <span class="n">Semester 1</span>
+          <h3>An application for one user</h3>
+          <p>You learn object-oriented programming from scratch, responsive web design and discrete mathematics. Your group designs, programs and documents an application for a single user.</p>
+        </div>
+      </li>
+      <li class="sem">
+        <div class="ph">Screenshot from a project</div>
+        <div>
+          <span class="n">Semester 2</span>
+          <h3>A system with a server and a database</h3>
+          <p>You learn to structure software so it can be tested and changed, and to store data in a database. Your group builds a system where several users work with the same server.</p>
+        </div>
+      </li>
+      <li class="sem">
+        <div class="ph">Photo from the lab</div>
+        <div>
+          <span class="n">Semester 3</span>
+          <h3>A system in several languages</h3>
+          <p>You program close to the hardware in Assembler and C and build on that in Java and C#. You also learn algorithms and data structures. In the project, your group makes parts written in different languages work together.</p>
+        </div>
+      </li>
+      <li class="sem">
+        <div class="ph">Screenshot of a web application with sensor data</div>
+        <div>
+          <span class="n">Semester 4</span>
+          <h3>An IoT system in the cloud</h3>
+          <p>In a larger team, you build a system that collects sensor data, uses machine learning to make predictions and shows the results in a web application. The system runs in the cloud, and you use continuous integration and delivery, as software companies do.</p>
+        </div>
+      </li>
+      <li class="sem alt text-only">
+        <div>
+          <span class="n">Semester 5</span>
+          <h3>Work in a company for 20 weeks</h3>
+          <p>You work alongside the other employees, with an experienced colleague you can ask and a supervisor from VIA. You find the place yourself, with help from VIA and the Career Centre, and you can also do your internship abroad. Companies don't have to pay interns, but many do (the engineers' union IDA recommends 16,200 DKK a month). If the internship is unpaid and you receive SU, you keep it.</p>
+          <p>Students have interned in finance, energy, industry and consulting, for example. <span class="todo" lang="da">3–4 navne på praktiksteder, hvis virksomhederne må nævnes</span></p>
+        </div>
+      </li>
+      <li class="sem">
+        <div class="ph">Screenshot from a bachelor project</div>
+        <div>
+          <span class="n">Semesters 6–7</span>
+          <h3>Specialise and make your bachelor project</h3>
+          <p>You take cyber security and work on a project in innovation and entrepreneurship. You choose six electives, and if three of them are in the same area, you get a specialisation. In semester 6 you can also go on exchange at one of our partner universities. In the last semester you make your bachelor project.</p>
+        </div>
+      </li>
+    </ol>
+    <p style="margin-top:14px"><a href="#structure">See all courses and ECTS</a></p>
+  </section>
+
+
+  <section class="sec" id="specialisations">
+    <h2>Choose your specialisation</h2>
+    <p class="intro">A specialisation is three electives in semesters 6 and 7, and a large part of your bachelor project must be in the same area.</p>
+    <div class="grid">
+      <div class="card"><h3>Machine Learning and AI Engineering</h3><p>You learn to train and use models that learn from data, such as neural networks and generative AI, and the maths and statistics behind them. You can work as a machine learning engineer, data scientist or AI engineer, for example.</p><p style="margin-top:10px"><a href="#">About the specialisation</a></p></div>
+      <div class="card"><h3>Business Information Systems</h3><p>You learn to collect, store and analyse large amounts of data so companies can make better decisions, using tools such as Power BI and SAP. You can work as a data engineer, BI developer or ERP developer, for example.</p><p style="margin-top:10px"><a href="#">About the specialisation</a></p></div>
+      <div class="card"><h3>Interactive Media</h3><p>You develop user interfaces and applications for web, mobile and AR/VR, and make games in Unity. You can work as a frontend developer, full-stack developer or game developer, for example.</p><p style="margin-top:10px"><a href="#">About the specialisation</a></p></div>
+    </div>
+    <p style="margin-top:16px">Want to work with games and XR from your first semester? See <a href="xr-udkast-ny-menu.html">Software Engineering – Games &amp; XR in Viborg</a>.</p>
+  </section>
+
+
+  <section class="sec band">
+    <h2>Is it for you?</h2>
+    <div class="honest" style="max-width:46em">
+      <h3>Good to know before you apply</h3>
+      <ul>
+        <li>You don't need to know how to program. We start from the beginning.</li>
+        <li>You have maths in semester 1. If you choose AI or want to go on to a master's, there is more maths in the electives. If your maths is rusty, VIA has an online <a href="#">maths kickstarter course</a>.</li>
+        <li>You work in a project group every semester, so teamwork is a big part of your day.</li>
+        <li>It's a full-time programme, around 40 hours a week.</li>
+      </ul>
+      <p style="margin:12px 0 0"><a href="#">Take our Software Technology Engineering quiz</a></p>
+    </div>
+  </section>
+
+
+  <section class="sec" id="horsens">
+    <h2>Studying in Horsens</h2>
+    <div class="hero-grid" style="align-items:start">
+      <div class="video" role="img" aria-label="Video placeholder">
+        <div class="play"></div>
+        <strong>Students show you around Campus Horsens</strong>
+        <small>Video, approx. 90 sec. with subtitles</small>
+      </div>
+      <div>
+        <p>Campus Horsens is right next to the train station. 2,900 students on 27 programmes study here, and it is the centre of VIA's engineering programmes. Your classmates come from all over the world, and some are Danish students who want an international degree. <span class="todo" lang="da">Hvor mange er I i en klasse?</span></p>
+        <p>Study start introduces you to the programme, your class, the campus and Horsens. You meet your teachers and student counsellors, and an experienced student from the programme is your tutor and helps you settle in.</p>
+        <p>During the programme you visit companies, and former students come back to talk about their work. After hours there are Friday bars, parties and board games, and you can join social, academic and political student associations.</p>
+        <p>Your total living costs, including rent, are typically 5,000–7,000 DKK (about 650–900 EUR) a month. <span class="todo" lang="da">Viborg-siden bruger 6.500–7.500 kr. Brug samme kilde.</span> <a href="#">How to find housing</a> · <a href="#">About Campus Horsens</a></p>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="sec band">
+    <h2>After you graduate</h2>
+    <p style="font-size:1.1rem;margin:0 0 8px">Only <strong>4 %</strong> of recent software engineering graduates from VIA in Horsens are unemployed. A typical starting salary is <strong>42,500 DKK</strong> a month, and 58,200 DKK after 10 years. <span style="color:var(--muted);font-size:.9rem">Source: Uddannelseszoom</span></p>
+    <p style="margin:0 0 8px">Software engineers work in almost every industry, such as finance, defence, energy, manufacturing, healthcare, transport and consulting. You can work as a software developer, systems consultant, project manager or software quality engineer.</p>
+    <p style="margin:0 0 8px">The Career Centre at Campus Horsens helps you with your CV, LinkedIn and job search in Denmark, and holds events where you meet companies. If you want to start your own company, VIA's <a href="#">student incubators</a> give advice to students and graduates.</p>
+    <div class="grid" style="margin-top:20px">
+      <div class="card person"><div class="face">photo</div><div><h3>Christopher</h3><p>From South Africa. Now works at Siemens. <a href="#">Read the story</a></p></div></div>
+      <div class="card person"><div class="face">photo</div><div><h3>Viktoria</h3><p>From Greece. Associate IT Engineer at the LEGO Group. <a href="#">Read the story</a></p></div></div>
+      <div class="card person"><div class="face">photo</div><div><h3>Tereza</h3><p>Software Technology Engineering student with a student job at the LEGO Group. <a href="#">Read the story</a></p></div></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Go on to a master's degree</h3>
+      <p>You can go on to a two-year master's degree. If you pass three electives in linear algebra, calculus and stochastic modelling, you meet the entry requirements for master's programmes at Aarhus University, such as Computer Engineering and Electrical Engineering. Admission is not guaranteed.</p>
+    </div>
+  </section>
+
+
+  <section class="sec" id="structure">
+    <h2>All courses</h2>
+    <p class="intro">The programme is 210 ECTS, with 30 ECTS per semester. Select a course to read the course description.</p>
+<div class="struct">
+  <div class="srow"><span class="sn">Sem. 1</span>
+    <a href="#" class="c s2"><span>Programming 1</span><span class="e">10 ECTS</span></a>
+    <a href="#" class="c s1"><span>Web development 1</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Mathematics for software engineering</span><span class="e">5 ECTS</span></a>
+    <div class="c s2 p"><span>Semester project 1</span><span class="e">10 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 2</span>
+    <a href="#" class="c s2"><span>Programming 2</span><span class="e">10 ECTS</span></a>
+    <a href="#" class="c s1"><span>Software engineering</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Database systems</span><span class="e">5 ECTS</span></a>
+    <div class="c s2 p"><span>Semester project 2</span><span class="e">10 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 3</span>
+    <a href="#" class="c s1"><span>Programming 3</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Computer architecture and organisation</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>.NET programming</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Algorithms and data structures</span><span class="e">5 ECTS</span></a>
+    <div class="c s2 p"><span>Semester project 3</span><span class="e">10 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 4</span>
+    <a href="#" class="c s1"><span>Introduction to machine learning and AI</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Embedded software</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>Web development 2</span><span class="e">5 ECTS</span></a>
+    <a href="#" class="c s1"><span>DevOps and cloud</span><span class="e">5 ECTS</span></a>
+    <div class="c s2 p"><span>Semester project 4</span><span class="e">10 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 5</span>
+    <div class="c s6 x"><span>Internship in a company</span><span class="e">30 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 6</span>
+    <a href="#" class="c s1"><span>Cyber security</span><span class="e">5 ECTS</span></a>
+    <div class="c s1 v"><span>Elective</span><span class="e">5 ECTS</span></div>
+    <div class="c s1 v"><span>Elective</span><span class="e">5 ECTS</span></div>
+    <div class="c s1 v"><span>Elective</span><span class="e">5 ECTS</span></div>
+    <div class="c s2 p"><span>Innovation and entrepreneurship</span><span class="e">10 ECTS</span></div>
+  </div>
+  <div class="srow"><span class="sn">Sem. 7</span>
+    <div class="c s1 v"><span>Elective</span><span class="e">5 ECTS</span></div>
+    <div class="c s1 v"><span>Elective</span><span class="e">5 ECTS</span></div>
+    <div class="c s1 v"><span>Elective</span><span class="e">5 ECTS</span></div>
+    <div class="c s3 p"><span>Bachelor project</span><span class="e">15 ECTS</span></div>
+  </div>
+</div>
+<div class="legend"><span>Course (links to course description)</span><span class="lp">Semester project</span><span class="lx">Internship</span><span class="lv">Elective</span></div>
+    <p style="margin-top:12px"><a href="#">Curriculum</a> · <a href="#">Course descriptions</a> · <a href="#">Electives</a> · <a href="#">Ministerial order</a> · <a href="#">Study survey and action plan</a></p>
+    <p><span class="todo" lang="da">Skemaet følger den nuværende semesteroversigt. Tjek kurser og ECTS mod studieordningen for optag 2027.</span></p>
+  </section>
+
+
+  <section class="sec band" id="faq">
+    <h2>Questions and answers</h2>
+    <details><summary>Is it worth studying software engineering when AI can write code?</summary><div>AI is part of the programme. You use AI tools in your courses and projects, and in semester 4 you have a course in machine learning and AI. Someone still has to design the software, decide what it should do and check that it works, and that is what you learn here.</div></details>
+    <details><summary>I'm Danish. Can I apply?</summary><div>Yes. The entry requirements are the same, and you apply through optagelse.dk as usual. The programme is also taught in Danish as Softwareingeniør (code 49319), so you can choose the class that suits you. <a href="horsens-udkast-ny-menu.html">See the Danish page</a></div></details>
+    <details><summary>Do I need to speak Danish?</summary><div>No. All teaching and exams are in English. <span class="todo" lang="da">Tilbyder VIA danskundervisning?</span></div></details>
+    <details><summary>What does it cost?</summary><div>The programme is free for citizens of the EU/EEA and Switzerland. Other applicants pay a tuition fee, and VIA does not offer scholarships. <a href="#">See tuition fees</a> Remember to budget for rent and living costs. <a href="#horsens">See what it costs to live in Horsens</a></div></details>
+    <details><summary>Can I find an internship if I don't speak Danish?</summary><div>Yes, but it can take more effort. Many software companies work in English, but not all of them. We work closely with companies in Horsens, have contacts all over Denmark, and the Career Centre helps you with your CV and applications. You can also do your internship abroad. If you want to stay in Denmark after you graduate, an internship here gives you a network and Danish work experience.</div></details>
+    <details><summary>Can I stay and work in Denmark after I graduate?</summary><div>Graduates from Danish programmes can apply for an establishment card, which gives you time to look for work in Denmark. <span class="todo" lang="da">tjek betingelser, link til nyidanmark.dk</span></div></details>
+    <details><summary>Can I get the Danish state education grant (SU)?</summary><div>Yes, if you are a Danish citizen. EU citizens can also qualify if they work in Denmark alongside their studies, for example 10–12 hours a week. <a href="#">SU for international students</a></div></details>
+    <details><summary>I have a relevant degree already. Can I get credit transfer?</summary><div>Yes, for example if you have an Academy Profession (AP) degree in computer science. You still have to meet the entry requirements.</div></details>
+    <details><summary>Can I get support if I have a disability?</summary><div>Yes, you can apply for special educational support (SPS). <a href="#">Contact VIA's SPS advisers</a></div></details>
+  </section>
+
+
+  <section class="sec" id="apply">
+    <h2>How to apply</h2>
+    <ol class="steps">
+      <li><strong>Check the entry requirements.</strong> You need an upper secondary qualification, such as a national school-leaving exam, the International Baccalaureate or the European Baccalaureate, that matches the Danish level of Mathematics A, English B and Physics B or Geoscience A. Each subject must be passed with an average of at least 2.0 on the Danish grading scale. If your exam is not Danish, see the extra requirements below. <a href="#">English proficiency requirements</a></li>
+      <li><strong>Apply at optagelse.dk by 15 March at 12:00 (CET).</strong> Use the programme code 49320. Upload your documents by 15 March, because they are part of the assessment. If you graduate in the summer, upload your final diploma by 5 July. Danish applicants can also apply in quota 1 by 5 July. If there are places left, you can apply until the programme starts.</li>
+      <li><strong>Send your signature page.</strong> If you don't have a Danish CPR number, sign the signature page from optagelse.dk and email it to apply@via.dk by 15 March at 12:00 (CET).</li>
+      <li><strong>You get an answer on 28 July.</strong> Remember to accept your place before the deadline.</li>
+    </ol>
+    <p style="margin-top:16px">If you are not an EU/EEA or Swiss citizen, you also pay an application fee and tuition, and you need a residence permit. The guide for non-EU/EEA applicants explains the extra steps.</p>
+    <p><strong>Step-by-step guides:</strong> <a href="#">EU/EEA applicants</a> · <a href="#">Non-EU/EEA applicants</a> · <a href="#">Danish applicants</a></p>
+    <details class="wide" style="margin-top:12px"><summary>If your exam is not Danish</summary><div>
+      <ul style="margin:0;padding-left:20px">
+        <li>Your exam must include at least 375 hours of mathematics, 210 hours of English and 190 hours of physics or 375 hours of geoscience. The hours are 60 minutes each and must be from the last three years of upper secondary school.</li>
+        <li>Fill in the <a href="#">verification form</a> to document the hours, and have your school stamp and sign it.</li>
+        <li>Upload a copy of your exam certificate and transcript of records, with a state-authorised translation of the transcript into Danish or English.</li>
+        <li>Check that your maths covers our <a href="#">maths syllabus</a>.</li>
+        <li>If you don't meet the requirements but have other relevant qualifications, you can apply for <a href="#">admission with special permission</a>.</li>
+      </ul>
+    </div></details>
+    <details class="wide"><summary>How we assess applications</summary><div>
+      <p style="margin-top:0">Applications by 15 March are assessed on your exam results, your grades in maths and English, relevant work experience and other documented qualifications, such as the IB, elite sport or volunteer work. If you have relevant work experience, upload a one-page CV and a declaration from your employer. You may be invited to an interview.</p>
+    </div></details>
+    <p style="margin-top:16px"><a href="#">Admission rules and how to appeal</a></p>
+    <p style="color:var(--muted);font-size:.9rem">The programme only starts if enough students apply.</p>
+  </section>
+
+
+  <section class="sec band" id="questions">
+    <h2>Questions?</h2>
+    <div class="grid">
+      <div class="card"><h3>Join an online open house</h3><p>Meet teachers and students online and ask your questions. Next open house: 11 November 2026. <a href="#">Sign up</a></p></div>
+      <div class="card"><h3>Student counselling</h3><p>Questions about the programme, student life and your options.</p><p>eng.studycounselling@via.dk<br>Monday, Tuesday and Thursday 9:00–12:00, Friday 10:00–12:00 (CET)</p></div>
+      <div class="card person"><div class="face">photo</div><div><h3>Richard Brooks</h3><p>Associate professor. Questions about the academic content.</p><p>+45 87 55 44 18<br>rib@via.dk</p></div></div>
+      <div class="card"><h3>Admissions</h3><p>Questions about your application.</p><p>+45 87 55 00 00<br>studieservice.optag@via.dk<br><a href="#">Chat with us</a> on weekdays 12:00–13:00 (CET) <span class="todo" lang="da">programsiden siger kl. 12–13, VIAs ansøgervejledning siger kl. 9–11. Hvad er rigtigt?</span></p></div>
+    </div>
+    <p style="margin-top:14px;color:var(--muted);font-size:.92rem">VIA Campus Horsens, Banegårdsgade 2, 8700 Horsens, Denmark · +45 87 55 00 20 · horsens@via.dk · <a href="#">Find us on the map</a><br>Phone hours: Monday–Thursday 7:30–15:30, Friday 7:30–14:30 (CET).</p>
+  </section>
+
+
+  <section class="sec">
+    <h2>You might also like</h2>
+    <div class="related">
+      <a href="xr-udkast-ny-menu.html">Software Engineering – Games &amp; XR, Viborg</a>
+      <a href="#">VIA's engineering programmes</a>
+      <a href="#">Life in Denmark</a>
+    </div>
+    <p style="margin-top:14px"><a href="#">Sign up for news about VIA's engineering programmes</a></p>
+  </section>
+
+</main>
+<footer class="foot">
+  <div><h2>Practical</h2><ul><li><a href="#">Addresses</a></li><li><a href="#">Find an employee</a></li><li><a href="#">Jobs at VIA</a></li><li><a href="#">Newsletter</a></li></ul></div>
+  <div><h2>Collaboration and companies</h2><ul><li><a href="#">IT support</a></li><li><a href="#">Rent facilities</a></li><li><a href="#">Student incubators</a></li></ul></div>
+  <div><h2>Staff and students</h2><ul><li><a href="#">Library</a></li><li><a href="#">MyVIA</a></li><li><a href="#">Internship portal</a></li></ul></div>
+  <div><h2>Privacy and legal</h2><ul><li><a href="#">Cookie policy</a></li><li><a href="#">Data and privacy</a></li><li><a href="#">Accessibility statement</a></li></ul></div>
+</footer>
+
+<nav class="applybar" aria-label="Apply"><a class="btn primary" href="#apply">How to apply</a><a class="btn secondary" href="#questions">Ask a question</a></nav>
+</body>
+</html>
